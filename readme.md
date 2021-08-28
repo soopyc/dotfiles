@@ -2,4 +2,7 @@
 this contains personal dotfiles (files that starts with `.`, i.e. `.zshrc`, `.bashrc`, etc)
 
 ## to install
-to be finished
+```bash
+chmod +x install.sh
+./install.sh
+```
