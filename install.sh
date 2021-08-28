@@ -1,6 +1,9 @@
 #!/bin/bash
 
-CONFIGS=(.p10k.zsh .zshrc)
+CONFIGS=(
+    .p10k.zsh 
+    .zshrc
+)
 
 echo "Installing configuration files"
 
