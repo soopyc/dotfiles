@@ -1,4 +1,13 @@
 #!/bin/bash
 
-ln -sv $HOME/dotfiles/.p10k.zsh ~/.p10k.zsh
-ln -sv $HOME/dotfiles/.zshrc ~/.zshrc
+CONFIGS=(.p10k.zsh .zshrc)
+
+echo "Installing configuration files"
+
+for item in ${CONFIGS[@]}; do
+    ln -sv $HOME/dotfiles/$item ~/$item
+done
+
+echo "Installing binaries"
+mkdir -pv ~/.local/bin
+ln -sv $HOME/dotfiles/bin/* ~/.local/bin/

@@ -1,0 +1,67 @@
+#!/bin/python3
+import os
+import sys 
+import argparse 
+
+from decli import cli
+import questionary
+
+
+# Setup stuff
+BLOG_DIR = os.environ.get('BLOG_DIR', os.path.expanduser('~/b'))
+
+
+def new_article(args):
+    print('hi hello yes')
+    print(args)
+
+
+def wip(_):
+    print('work in progress, check back later.')
+
+
+data = {
+        'description': (
+            'Python script to automate article creation and editing of a hexo site\n'
+            'expects the directory format to follow the default settings. config support soon perhaps'
+        ),
+        "formatter_class": argparse.RawDescriptionHelpFormatter,
+        'subcommands': {
+            'title': 'command',
+            'required': True,
+            'description': 'command to run, required to function.',
+            'commands': [
+                {
+                    'name': ['new', 'n'],
+                    'help': 'Create a new article',
+                    'func': new_article
+                },
+                {
+                    'name': ['edit', 'e'], 
+                    'help': 'Edit an existing article',
+                    'func': wip
+                }
+            ]
+    }
+}
+
+def main():
+    print(f'[i] hexo site directory is set to {BLOG_DIR}')
+    print('[-] Checking if directory exists... ', end='\r')
+    if not os.path.exists(BLOG_DIR):
+        print(f'[!] directory {BLOG_DIR} doesn\'t exist. create one or clone with git (support soon)')
+        sys.exit(1)
+    print(f'[i] directory {BLOG_DIR} exists')
+    parser = cli(data)
+    try:
+        args = parser.parse_args()
+    except TypeError:
+        print(f'[!] no command found or not a valid command. try running {sys.argv[0]} --help')
+        sys.exit(1)
+
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()
+
