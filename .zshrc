@@ -119,3 +119,5 @@ gpgconf --launch gpg-agent
 
 export PATH="$PATH:./node_modules/.bin"
 
+
+eval $(thefuck --alias)

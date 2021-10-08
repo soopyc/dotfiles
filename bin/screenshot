@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Screenshot script because lxqt and all the other shit are stupid as fuck 
+
+DIRECTORY="$HOME/Pictures/$(date +'%Y-%m')/"
+MODE=""
+  
+mkdir -p $DIRECTORY
+
+FILENAME_SCROT="$DIRECTORY/$(date +'screenshot_%F-%H%M%S').png"
+# bruh=$([-z $1] && echo "N" || echo "c")
+
+case $1 in 
+	a*	) echo "$0 <FMLHA> [C]"	;;
+	f*	) 
+          flameshot full $([ -z $2 ] && echo "-p $DIRECTORY" || echo "-c")  # screen doesn't work.
+          MODE='fullscreen' ;;
+	m*	) 
+          flameshot gui -p $DIRECTORY
+          MODE='manual' ;;
+	l*	) 
+          scrot -ps \
+            $FILENAME_SCROT && ([ -z $2 ] && true || xclip \
+            -selection clipboard $FILENAME_SCROT -t image/png)
+          MODE='life' ;;
+	h*	) echo "$0 <Fullscreen|Manual|Lselect|Help|Asimpler help> [Copy?(dont set if not copy)]"	;;
+	*	) echo "dumb fuck (run \`$0 help\` if you dont want to be 500% dumber)"				;;
+esac
+
+# Using stuff that im not suposed to use pogger hcammeorp
+if [ -n $MODE ]; then
+  i3-nagbar \
+    -m "Screenshot utility called: mode=$MODE copy=$([-n $2] && echo '0' || echo '1')" \
+    -t warning
+fi
+
