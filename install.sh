@@ -12,17 +12,25 @@ CONFIGS=(
     .zshrc
 )
 
-echo "Installing configuration files"
+echo "*** kcomain's dotfiles"
+echo ""
+echo "*** this script requires: ln, mkdir, chmod"
+echo "*** ln output with \`~' means a backup has been created."
+echo ""
+
+echo "*** Installing configuration files"
 
 for item in ${CONFIGS[@]}; do
-    ln -sv $HOME/dotfiles/$item ~/$item
+    ln -bsv $HOME/dotfiles/$item ~/$item
 done
 
-echo "Installing binaries"
+echo "*** Installing binaries"
 mkdir -pv ~/.local/bin
-ln -sv $HOME/dotfiles/bin/* ~/.local/bin/
+ln -bsv $HOME/dotfiles/bin/* ~/.local/bin/
 
-echo "Setting up permissions"
-chmod +x ./bin/*
+echo "*** Setting up permissions"
+chmod -vR +x ./bin/*
 
-echo "To install packages, run ./packages.sh"
+echo "*** To install packages, run ./packages.sh"
+echo "!!! All done!"
+
