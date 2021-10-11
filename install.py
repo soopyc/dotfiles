@@ -7,4 +7,22 @@
 # Copyright (c) 2021 kcomain, Licensed with MIT
 
 import os
+import sys
+import typing
+import subprocess
 
+
+def shell(cmd: typing.Union[str, typing.Iterable]):
+    if type(cmd) == str:
+        cmd = cmd.split()
+
+    process = subprocess.run(cmd)
+    return process
+
+
+def main():
+    return
+
+
+if __name__ == '__main__':
+    sys.exit(main)
