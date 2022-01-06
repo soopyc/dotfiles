@@ -10,6 +10,7 @@
 CONFIGS=(
     .p10k.zsh 
     .zshrc
+    .makepkg.conf
 )
 
 echo "*** kcomain's dotfiles"

@@ -1,0 +1,4 @@
+[submodule "fetch.sh"]
+	path = fetch.sh
+	url = https://github.com/wick3dr0se/fetch.sh
+	branch = master

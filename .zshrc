@@ -116,16 +116,25 @@ alias mc="make check"
 alias mt="make test"
 alias mi="make install"
 alias cpu="./configure --prefix=/usr"
+alias makepkg="GNUPGHOME=\$MAKEPKG_GPGHOME makepkg"
+alias makepkg-gpg="GNUPGHOME=\$MAKEPKG_GPGHOME gpg"
+alias yay="GNUPGHOME=\$MAKEPKG_GPGHOME yay"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 export TERMINAL=alacritty  # i3
 export EDITOR=nvim
 
+export GIT_ASKPASS=ksshaskpass
 export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+export MAKEPKG_GPGHOME="$HOME/.local/share/makepkg-gpg"
 gpgconf --launch gpg-agent
 
-export PATH="$PATH:./node_modules/.bin"
+export PATH="$PATH:./node_modules/.bin:$HOME/.local/bin/"
 
+mkdir -pm700 $MAKEPKG_GPGHOME
 eval $(thefuck --alias)
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
