@@ -1,12 +1,22 @@
+lolcat=/home/sophie/.rvm/gems/ruby-3.1.2/bin/lolcat
+fortune -c computers disclaimer ascii-art linux debian protolol bashorg -e | $lolcat
+
+# +-----------------------------------------------------+
+# | This breaks more things than being actually useful. |
+# +-----------------------------------------------------+
+#
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+#if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+#fi
 
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/.cargo/bin/:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
+
+# add zsh completions
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 # Path to your oh-my-zsh installation.
 export ZSH="/home/sophie/.oh-my-zsh"
@@ -28,7 +38,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
@@ -54,7 +64,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Uncomment the following line to display red dots whilst waiting for completion.
 # Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
 # See https://github.com/ohmyzsh/ohmyzsh/issues/5765
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -77,7 +87,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git node npm)
+plugins=(git node npm command-not-found zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -99,6 +109,8 @@ source $ZSH/oh-my-zsh.sh
 # export ARCHFLAGS="-arch x86_64"
 CORES=4
 
+export CC=clang
+export CXX=clang++
 export MAKEOPTS="-j$CORES"
 export MAKEFLAGS="$MAKEOPTS"
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
@@ -119,10 +131,61 @@ alias cpu="./configure --prefix=/usr"
 alias makepkg="GNUPGHOME=\$MAKEPKG_GPGHOME makepkg"
 alias makepkg-gpg="GNUPGHOME=\$MAKEPKG_GPGHOME gpg"
 alias yay="GNUPGHOME=\$MAKEPKG_GPGHOME yay"
+alias scard='gpg-connect-agent "scd serialno" "learn --force" /bye'
+alias ip='ip --color'
+alias pmbootstrap="pmbootstrap --mirror-pmOS=https://keine.soopy.moe/pmos/postmarketos/"
+
+#build_and_upload() {
+#  makepkg && \
+#  gpg --detach-sign *.tar.zst && \
+#  scp ./*.tar.zst* cirno.soopy.moe:~/.pkg-in
+#}
+
+package() {
+  BUILDCMD=${BUILDCMD:-extra-x86_64-build}
+  echo "[1;32mUsing build command: $BUILDCMD[0m"
+  echo "[1;32mBuilding package(s)[0m"
+
+  $BUILDCMD $@
+  if [ $? -ne 0 ]; then
+    echo "[1;31mBuild failed, not uploading[0m"
+    return 1
+  fi
+
+  echo "[1;32mBuild successful[0m"
+  sau
+}
+
+package_debug () {
+  BUILDCMD="testing-x86_64-build" package
+}
+
+sau() {
+  echo "[1;32mSigning packages[0m"
+
+  for i in *.tar.zst; do
+    echo "  signing [33m$i[0m"
+    gpg --batch --yes --detach-sign $i
+  done
+
+  echo "[1;32mUploading packages[0m"
+  scp ./*.tar.zst{,.sig} cirno.soopy.moe:~/.pkg-in
+}
+
+set_color() {
+    perl -e 'foreach $a(@ARGV){print "\e[48:2::".join(":",unpack("C*",pack("H*",$a)))."m"};' "$@"
+}
+
+colorpicker() {
+  HEX=$(grim -g "`slurp -p -b 00000000`" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:- | rg -o "[0-9A-F]{6}")
+  set_color $HEX
+  printf "#$HEX\n";
+}
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export TERMINAL=alacritty  # i3
+#export TERMINAL=alacritty  # i3
 export EDITOR=nvim
 
 export GIT_ASKPASS=ksshaskpass
@@ -131,19 +194,21 @@ export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 export MAKEPKG_GPGHOME="$HOME/.local/share/makepkg-gpg"
 gpgconf --launch gpg-agent
 
+# fuck off
+export ANSIBLE_NOCOWS=1
+
+source /usr/share/doc/pkgfile/command-not-found.zsh
+source ~/dotfiles/private/woodpecker.zsh
+
 export PATH="$PATH:./node_modules/.bin:$HOME/.local/bin/"
 
 mkdir -pm700 $MAKEPKG_GPGHOME
-eval $(thefuck --alias)
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 source /usr/share/nvm/init-nvm.sh
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-export PATH="$HOME/.poetry/bin:$PATH"
-
-
-[[ -s "$HOME/.avn/bin/avn.sh" ]] && source "$HOME/.avn/bin/avn.sh" # load avn
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
+
+export XDG_DATA_DIRS=$HOME/.nix-profile/share:/usr/local/share:/usr/share:$XDG_DATA_DIRS
+
+eval "$(direnv hook zsh)"
