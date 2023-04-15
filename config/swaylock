@@ -1,0 +1,49 @@
+# options
+show-keyboard-layout
+indicator-caps-lock
+show-failed-attempts
+screenshots
+clock
+indicator
+grace=3
+
+# effects
+effect-blur=7x5
+fade-in=0.15
+effect-vignette=0.55:0.75
+
+# style
+indicator-radius=100
+indicator-thickness=10
+line-uses-ring
+
+## base default colors
+text-color=FFFFFF
+inside-color=F5A9B8
+ring-color=5BCEFA
+key-hl-color=5C7FFFCC
+bs-hl-color=DC95C5
+separator-color=77B5D050
+
+## clear colors
+text-clear-color=FFFFFF
+inside-clear-color=B7DCF2
+ring-clear-color=A2C1E0
+
+## verifying colors
+text-ver-color=FFFFFF
+inside-ver-color=B7E5B0
+ring-ver-color=77DD77
+
+## error colors
+text-wrong-color=FFFFFF
+inside-wrong-color=FFB6B3
+ring-wrong-color=FF6962
+
+## caps lock colors
+text-caps-lock-color=000000
+ring-caps-lock-color=966BCE
+inside-caps-lock-color=D9CFF7
+caps-lock-key-hl-color=DFD7F7
+caps-lock-bs-hl-color=78329D
+
