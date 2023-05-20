@@ -2,3 +2,6 @@
 	path = fetch.sh
 	url = https://github.com/wick3dr0se/fetch.sh
 	branch = master
+[submodule "ext/shell-mommy"]
+	path = ext/shell-mommy
+	url = https://github.com/sudofox/shell-mommy
